@@ -1,6 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_web/authentication/auth.dart';
+import 'package:flutter_web/home_page.dart';
+import 'package:flutter_web/repository/chat_repo.dart';
+
+import '../model/user.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -16,18 +19,33 @@ class _AuthScreenState extends State<AuthScreen> {
   var emailAddress = '';
   var username = '';
   Future<void> signIn() async {
-    User? result = await _auth.signInAnon();
-    if (result == null) {
-      print('error signing in');
-    } else {
-      print('signed in');
-      print(result);
-    }
     if (usernameController.text.isEmpty || emailController.text.isEmpty) {
       return;
     }
     username = usernameController.text;
     emailAddress = emailController.text;
+    ChatUser? result = await _auth.signInAnon(emailAddress, username);
+    if (result == null) {
+      print('error signing in');
+    } else {
+      print('signed in');
+      print(result.uid);
+      if (!context.mounted) return;
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ));
+      await UserRepository()
+          .setUserData(result.username, result.email, result.uid);
+    }
+  }
+
+  @override
+  void dispose() {
+    usernameController.clear();
+    emailController.clear();
+    super.dispose();
   }
 
   @override

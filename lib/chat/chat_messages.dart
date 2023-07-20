@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web/chat/message_bubble.dart';
@@ -13,20 +14,37 @@ class ChatMessages extends ConsumerStatefulWidget {
 class _ChatMessagesState extends ConsumerState<ChatMessages> {
   @override
   Widget build(BuildContext context) {
+    final authenticatedUser = FirebaseAuth.instance.currentUser!;
     return ref.watch(streamProvider).when(
           data: (data) {
-            final content = data.docs;
+            final loadedMessages = data.docs;
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
                 reverse: true,
-                itemBuilder: (context, index) => MessageBubble.first(
-                  userImage: null,
-                  username: content[index]['username'],
-                  message: content[index]['message'],
-                  isMe: false,
-                ),
-                itemCount: content.length,
+                itemBuilder: (context, index) {
+                  final chatMessage = loadedMessages[index].data();
+                  final nextChatMessage = index + 1 < loadedMessages.length
+                      ? loadedMessages[index + 1].data()
+                      : null;
+                  final currentMessageUserId = chatMessage['user'];
+                  final nextMessageUserId =
+                      nextChatMessage != null ? nextChatMessage['user'] : null;
+                  final nextUserIsSame =
+                      (nextMessageUserId == currentMessageUserId);
+                  if (nextUserIsSame) {
+                    return MessageBubble.next(
+                        message: chatMessage['message'],
+                        isMe: (authenticatedUser.uid == currentMessageUserId));
+                  } else {
+                    return MessageBubble.first(
+                        userImage: null,
+                        username: chatMessage['username'],
+                        message: chatMessage['message'],
+                        isMe: (authenticatedUser.uid == currentMessageUserId));
+                  }
+                },
+                itemCount: loadedMessages.length,
               ),
             );
           },

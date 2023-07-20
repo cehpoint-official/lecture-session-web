@@ -11,17 +11,18 @@ class ChatBox extends ConsumerStatefulWidget {
   ConsumerState<ChatBox> createState() => _ChatBoxState();
 }
 
-void sendMessage(String message) async {
-  if (messageController.text.trim().isEmpty) {
-    return;
-  }
-  messageController.clear();
-  await UserRepository().setMessage('manas', message);
-}
-
 TextEditingController messageController = TextEditingController();
 
 class _ChatBoxState extends ConsumerState<ChatBox> {
+  Future<void> sendMessage(String message) async {
+    if (messageController.text.trim().isEmpty) {
+      return;
+    }
+    messageController.clear();
+
+    await UserRepository().setMessage('manas', message);
+  }
+
   @override
   Widget build(BuildContext context) {
     // final chatEnabled=ref.watch(chatProvider);
@@ -59,7 +60,7 @@ class _ChatBoxState extends ConsumerState<ChatBox> {
           const Expanded(child: ChatMessages()),
           Container(
             margin: const EdgeInsets.all(10),
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             height: 50,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(50), color: Colors.grey),
