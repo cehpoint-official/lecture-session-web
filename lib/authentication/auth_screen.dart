@@ -1,27 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web/authentication/auth.dart';
 import 'package:flutter_web/home_page.dart';
+
 import 'package:flutter_web/repository/chat_repo.dart';
 
 import '../model/user.dart';
 
-class AuthScreen extends StatefulWidget {
+class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  ConsumerState<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _AuthScreenState extends ConsumerState<AuthScreen> {
   final AuthServices _auth = AuthServices();
   TextEditingController emailController = TextEditingController();
   TextEditingController usernameController = TextEditingController();
   var emailAddress = '';
   var username = '';
+
+  @override
+  void dispose() {
+    usernameController.clear();
+    emailController.clear();
+    super.dispose();
+  }
+
   Future<void> signIn() async {
     if (usernameController.text.isEmpty || emailController.text.isEmpty) {
       return;
     }
+
     username = usernameController.text;
     emailAddress = emailController.text;
     ChatUser? result = await _auth.signInAnon(emailAddress, username);
@@ -36,16 +47,10 @@ class _AuthScreenState extends State<AuthScreen> {
           MaterialPageRoute(
             builder: (context) => const HomePage(),
           ));
+
       await UserRepository()
           .setUserData(result.username, result.email, result.uid);
     }
-  }
-
-  @override
-  void dispose() {
-    usernameController.clear();
-    emailController.clear();
-    super.dispose();
   }
 
   @override

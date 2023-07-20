@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:video_player/video_player.dart';
 
-class VideoPlayerWidget extends StatefulWidget {
+class VideoPlayerWidget extends ConsumerStatefulWidget {
   const VideoPlayerWidget({super.key});
 
   @override
-  State<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
+  ConsumerState<VideoPlayerWidget> createState() => _VideoPlayerWidgetState();
 }
 
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
   late VideoPlayerController _controller;
 
   @override
@@ -26,6 +28,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void dispose() {
     super.dispose();
     _controller.dispose();
+  }
+
+  int getUserNo() {
+    return 0;
   }
 
   @override
@@ -99,19 +105,19 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               color: const Color(0x1cffffff)),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.people,
                 color: Colors.white,
                 size: 18,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
               Text(
-                '22 Participants',
-                style: TextStyle(color: Colors.white, fontSize: 15),
+                '${getUserNo()} Participants',
+                style: const TextStyle(color: Colors.white, fontSize: 15),
               ),
             ],
           ),

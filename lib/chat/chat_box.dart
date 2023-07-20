@@ -20,7 +20,7 @@ class _ChatBoxState extends ConsumerState<ChatBox> {
     }
     messageController.clear();
 
-    await UserRepository().setMessage('manas', message);
+    await UserRepository().setMessage(message);
   }
 
   @override

@@ -6,7 +6,7 @@ final userRepositoryProvider = Provider((ref) => UserRepository());
 
 class UserRepository {
   final _auth = FirebaseAuth.instance;
-  Future<void> setMessage(String name, String message) async {
+  Future<void> setMessage(String message) async {
     final userData = await FirebaseFirestore.instance
         .collection('user-data')
         .doc(_auth.currentUser!.uid)
