@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web/authentication/auth_screen.dart';
 import 'package:flutter_web/firebase_options.dart';
-import 'package:flutter_web/home_page.dart';
+
 import 'package:flutter_web/repository/chat_repo.dart';
 
 final chatProvider = StateProvider<bool>((ref) => false);
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const HomePage(),
+      home: const AuthScreen(),
     );
   }
 }

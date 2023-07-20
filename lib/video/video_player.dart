@@ -15,7 +15,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'))
+        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'))
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
@@ -23,31 +23,73 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(children: [
       Container(
         color: Colors.black,
-        child: const Center(
-            child: Text(
-          'video',
-          style: TextStyle(color: Colors.white, fontSize: 50),
-        )),
+        child: Center(
+          child: _controller.value.isInitialized
+              ? SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: VideoPlayer(_controller),
+                )
+              : const Center(
+                  child: Text(
+                  'video uploading...',
+                  style: TextStyle(color: Colors.white, fontSize: 50),
+                )),
+        ),
       ),
       Positioned(
         bottom: 0,
-        left: 0,
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: const Color(0x1cffffff)),
-          child: const Text(
-            '00:00',
-            style: TextStyle(color: Colors.white),
+        left: MediaQuery.of(context).size.width * 0.5,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FloatingActionButton(
+            onPressed: () {
+              setState(() {
+                _controller.value.isPlaying
+                    ? _controller.pause()
+                    : _controller.play();
+              });
+            },
+            child: Icon(
+              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+            ),
           ),
         ),
       ),
+      ValueListenableBuilder(
+          valueListenable: _controller,
+          builder: (context, value, child) {
+            var duration =
+                Duration(milliseconds: value.position.inMilliseconds.round());
+            var time = [duration.inMinutes, duration.inSeconds]
+                .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
+                .join(':');
+            return Positioned(
+              bottom: 0,
+              left: 0,
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: const Color(0x1cffffff)),
+                child: Text(
+                  time,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            );
+          }),
       Positioned(
         left: 0,
         top: 0,
@@ -74,7 +116,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
             ],
           ),
         ),
-      )
+      ),
     ]);
   }
 }
