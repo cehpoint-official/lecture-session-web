@@ -1,8 +1,7 @@
-import 'dart:js_interop';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_web/chat/chat_box.dart';
 
 import 'package:video_player/video_player.dart';
 
@@ -26,7 +25,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.networkUrl(Uri.parse(
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4'))
+        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'))
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
@@ -50,9 +49,8 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
         color: Colors.black,
         child: Center(
           child: _controller.value.isInitialized
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.5,
+              ? AspectRatio(
+                  aspectRatio: _controller.value.aspectRatio,
                   child: VideoPlayer(_controller),
                 )
               : const Center(
@@ -89,6 +87,9 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
             // print(duration.inSeconds);
             if (duration == value.duration && duration > Duration.zero) {
               print('yess');
+            }
+            if (duration > const Duration(seconds: 30)) {
+              first30 = false;
             }
             var time = [duration.inMinutes, duration.inSeconds]
                 .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
