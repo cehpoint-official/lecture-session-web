@@ -1,7 +1,16 @@
+import 'dart:js_interop';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:video_player/video_player.dart';
+
+import '../model/default_users.dart';
+
+// final durationProvider=Provider((ref) => )
+final numberProvider = StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
+    (ref) => FirebaseFirestore.instance.collection('user-data').snapshots());
 
 class VideoPlayerWidget extends ConsumerStatefulWidget {
   const VideoPlayerWidget({super.key});
@@ -77,52 +86,66 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
           builder: (context, value, child) {
             var duration =
                 Duration(milliseconds: value.position.inMilliseconds.round());
+            // print(duration.inSeconds);
+            if (duration == value.duration && duration > Duration.zero) {
+              print('yess');
+            }
             var time = [duration.inMinutes, duration.inSeconds]
                 .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
                 .join(':');
             return Positioned(
               bottom: 0,
               left: 0,
-              child: Container(
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: const Color(0x1cffffff)),
-                child: Text(
-                  time,
-                  style: const TextStyle(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: const Color(0x1cffffff)),
+                  child: Text(
+                    time,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             );
           }),
-      Positioned(
-        left: 0,
-        top: 0,
-        child: Container(
-          margin: const EdgeInsets.all(10),
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: const Color(0x1cffffff)),
-          child: Row(
-            children: [
-              const Icon(
-                Icons.people,
-                color: Colors.white,
-                size: 18,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Text(
-                '${getUserNo()} Participants',
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-            ],
+      ref.watch(numberProvider).when(data: (data) {
+        return Positioned(
+          left: 0,
+          top: 0,
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: const Color(0x1cffffff)),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.people,
+                  color: Colors.white,
+                  size: 18,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Text(
+                  '${data.docs.length + indianNames.length} Participants',
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
+                ),
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      }, error: (error, stackTrace) {
+        print(error.toString());
+        return const Text('');
+      }, loading: () {
+        return const Text('');
+      })
     ]);
   }
 }
