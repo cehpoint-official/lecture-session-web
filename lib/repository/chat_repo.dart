@@ -6,17 +6,18 @@ final userRepositoryProvider = Provider((ref) => UserRepository());
 
 class UserRepository {
   final _auth = FirebaseAuth.instance;
-  Future<void> setMessage(String message) async {
+  Future<void> setMessage(
+      {String? username, required String message, int? id}) async {
     final userData = await FirebaseFirestore.instance
         .collection('user-data')
         .doc(_auth.currentUser!.uid)
         .get();
     await FirebaseFirestore.instance.collection('user-chats').add(
       {
-        'username': userData['username'],
+        'username': username ?? userData['username'],
         'message': message,
         'createdAt': Timestamp.now(),
-        'user': _auth.currentUser!.uid,
+        'user': id ?? _auth.currentUser!.uid,
       },
     );
   }

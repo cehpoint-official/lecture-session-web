@@ -88,7 +88,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
             if (duration == value.duration && duration > Duration.zero) {
               print('yess');
             }
-            if (duration > const Duration(seconds: 30)) {
+            if (duration > const Duration(seconds: 90)) {
               first30 = false;
             }
             var time = [duration.inMinutes, duration.inSeconds]

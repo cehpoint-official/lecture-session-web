@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_web/chat/chat_messages.dart';
 import 'package:flutter_web/main.dart';
 import 'package:flutter_web/repository/chat_repo.dart';
+
+var first30 = true;
+final first30StreamProvider =
+    StreamProvider<QuerySnapshot<Map<String, dynamic>>>((ref) {
+  return FirebaseFirestore.instance.collection('first-30').snapshots();
+});
 
 class ChatBox extends ConsumerStatefulWidget {
   const ChatBox({super.key});
@@ -14,17 +21,17 @@ class ChatBox extends ConsumerStatefulWidget {
 TextEditingController messageController = TextEditingController();
 
 class _ChatBoxState extends ConsumerState<ChatBox> {
-  Future<void> sendMessage(String message) async {
-    if (messageController.text.trim().isEmpty) {
-      return;
-    }
-    messageController.clear();
-
-    await UserRepository().setMessage(message);
-  }
-
   @override
   Widget build(BuildContext context) {
+    Future<void> sendMessage(String message) async {
+      if (messageController.text.trim().isEmpty) {
+        return;
+      }
+      messageController.clear();
+
+      await UserRepository().setMessage(message: message);
+    }
+
     // final chatEnabled=ref.watch(chatProvider);
     final size = MediaQuery.of(context).size;
     return Container(
