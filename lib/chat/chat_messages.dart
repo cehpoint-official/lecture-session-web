@@ -32,16 +32,34 @@ class _ChatMessagesState extends ConsumerState<ChatMessages> {
                       nextChatMessage != null ? nextChatMessage['user'] : null;
                   final nextUserIsSame =
                       (nextMessageUserId == currentMessageUserId);
-                  if (nextUserIsSame) {
-                    return MessageBubble.next(
-                        message: chatMessage['message'],
-                        isMe: (authenticatedUser.uid == currentMessageUserId));
+                  if (chatMessage['username'] == 'cehpoint support') {
+                    return Container(
+                        color: Colors.blue,
+                        child: nextUserIsSame
+                            ? MessageBubble.next(
+                                message: chatMessage['message'],
+                                isMe: (authenticatedUser.uid ==
+                                    currentMessageUserId))
+                            : MessageBubble.first(
+                                userImage: null,
+                                username: chatMessage['username'],
+                                message: chatMessage['message'],
+                                isMe: (authenticatedUser.uid ==
+                                    currentMessageUserId)));
                   } else {
-                    return MessageBubble.first(
-                        userImage: null,
-                        username: chatMessage['username'],
-                        message: chatMessage['message'],
-                        isMe: (authenticatedUser.uid == currentMessageUserId));
+                    if (nextUserIsSame) {
+                      return MessageBubble.next(
+                          message: chatMessage['message'],
+                          isMe:
+                              (authenticatedUser.uid == currentMessageUserId));
+                    } else {
+                      return MessageBubble.first(
+                          userImage: null,
+                          username: chatMessage['username'],
+                          message: chatMessage['message'],
+                          isMe:
+                              (authenticatedUser.uid == currentMessageUserId));
+                    }
                   }
                 },
                 itemCount: loadedMessages.length,
