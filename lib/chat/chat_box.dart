@@ -36,7 +36,7 @@ class _ChatBoxState extends ConsumerState<ChatBox> {
           Container(
             // width: double.infinity,
             height: size.height * 0.07,
-            color: Colors.grey,
+            color: Colors.grey.withOpacity(0.2),
             child: Row(
               children: [
                 const Expanded(
@@ -63,7 +63,8 @@ class _ChatBoxState extends ConsumerState<ChatBox> {
             padding: const EdgeInsets.all(8),
             height: 50,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50), color: Colors.grey),
+                borderRadius: BorderRadius.circular(50),
+                color: Colors.grey.withOpacity(0.3)),
             child: Row(
               children: [
                 Expanded(
