@@ -30,16 +30,13 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
         setState(() {});
       });
+    _controller.play();
   }
 
   @override
   void dispose() {
     super.dispose();
     _controller.dispose();
-  }
-
-  int getUserNo() {
-    return 0;
   }
 
   @override
@@ -55,28 +52,9 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
                 )
               : const Center(
                   child: Text(
-                  'video uploading...',
+                  'Session Ended...',
                   style: TextStyle(color: Colors.white, fontSize: 50),
                 )),
-        ),
-      ),
-      Positioned(
-        bottom: 0,
-        left: MediaQuery.of(context).size.width * 0.5,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                _controller.value.isPlaying
-                    ? _controller.pause()
-                    : _controller.play();
-              });
-            },
-            child: Icon(
-              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-            ),
-          ),
         ),
       ),
       ValueListenableBuilder(
@@ -85,11 +63,15 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
             var duration =
                 Duration(milliseconds: value.position.inMilliseconds.round());
             // print(duration.inSeconds);
-            if (duration == value.duration && duration > Duration.zero) {
-              print('yess');
-            }
-            if (duration > const Duration(seconds: 90)) {
+            // if (duration == value.duration && duration > Duration.zero) {
+            //   last30=true;
+            // }
+            if (duration > const Duration(seconds: 60)) {
               first30 = false;
+            }
+            if (duration >
+                _controller.value.duration - const Duration(seconds: 60)) {
+              last30 = true;
             }
             var time = [duration.inMinutes, duration.inSeconds]
                 .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))

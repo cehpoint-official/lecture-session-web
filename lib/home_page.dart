@@ -13,27 +13,48 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
+  void defaultMessage() {
+    ref.read(first30StreamProvider).when(
+          data: (data) async {
+            final messages = data.docs;
+            for (int i = 0; i < messages.length; i++) {
+              await Future<void>.delayed(const Duration(seconds: 3));
+              print('object');
+              await UserRepository().setMessage(
+                  username: messages[i].data()['name'],
+                  message: messages[i].data()['message'],
+                  id: i);
+            }
+          },
+          error: (error, stackTrace) => print(error.toString()),
+          loading: () => null,
+        );
+  }
+
+  void defaultLastMessage() {
+    ref.read(last30StreamProvider).when(
+          data: (data) async {
+            final messages = data.docs;
+            for (int i = 0; i < messages.length; i++) {
+              await Future<void>.delayed(const Duration(seconds: 3));
+              print('object');
+              await UserRepository().setMessage(
+                  username: messages[i].data()['name'],
+                  message: messages[i].data()['message'],
+                  id: i);
+            }
+          },
+          error: (error, stackTrace) => print(error.toString()),
+          loading: () => null,
+        );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (first30) {
-      ref.watch(first30StreamProvider).when(
-            data: (data) async {
-              final messages = data.docs;
-              for (int i = 0; i < messages.length; i++) {
-                await Future.delayed(const Duration(seconds: 8))
-                    .then((value) async {
-                  print('object');
-                  await UserRepository().setMessage(
-                      username: messages[i].data()['name'],
-                      message: messages[i].data()['message'],
-                      id: i);
-                });
-              }
-            },
-            error: (error, stackTrace) => print(error.toString()),
-            loading: () => null,
-          );
+      defaultMessage();
     }
+
     final chatEnabled = ref.watch(chatProvider);
     return Scaffold(
       body: Row(
