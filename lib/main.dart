@@ -17,7 +17,7 @@ final streamProvider =
   return userRepository.fetchChat();
 });
 var first30 = true;
-var last30 = false;
+
 final first30StreamProvider =
     StreamProvider<QuerySnapshot<Map<String, dynamic>>>((ref) {
   return FirebaseFirestore.instance.collection('first-30').snapshots();

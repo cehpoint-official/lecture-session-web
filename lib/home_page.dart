@@ -19,25 +19,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             final messages = data.docs;
             for (int i = 0; i < messages.length; i++) {
               await Future<void>.delayed(const Duration(seconds: 3));
-              print('object');
-              await UserRepository().setMessage(
-                  username: messages[i].data()['name'],
-                  message: messages[i].data()['message'],
-                  id: i);
-            }
-          },
-          error: (error, stackTrace) => print(error.toString()),
-          loading: () => null,
-        );
-  }
 
-  void defaultLastMessage() {
-    ref.read(last30StreamProvider).when(
-          data: (data) async {
-            final messages = data.docs;
-            for (int i = 0; i < messages.length; i++) {
-              await Future<void>.delayed(const Duration(seconds: 3));
-              print('object');
               await UserRepository().setMessage(
                   username: messages[i].data()['name'],
                   message: messages[i].data()['message'],

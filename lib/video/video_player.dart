@@ -62,10 +62,10 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
             if (duration > const Duration(seconds: 60)) {
               first30 = false;
             }
-            if (duration >
-                _controller.value.duration - const Duration(seconds: 60)) {
-              last30 = true;
-            }
+            // if (duration >
+            //     _controller.value.duration - const Duration(seconds: 60)) {
+            //   last30 = true;
+            // }
             var time = [duration.inMinutes, duration.inSeconds]
                 .map((seg) => seg.remainder(60).toString().padLeft(2, '0'))
                 .join(':');
