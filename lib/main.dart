@@ -7,12 +7,26 @@ import 'package:flutter_web/firebase_options.dart';
 
 import 'package:flutter_web/repository/chat_repo.dart';
 
+final numberProvider = StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
+    (ref) => FirebaseFirestore.instance.collection('user-data').snapshots());
+
 final chatProvider = StateProvider<bool>((ref) => false);
 final streamProvider =
     StreamProvider<QuerySnapshot<Map<String, dynamic>>>((ref) {
   final userRepository = ref.watch(userRepositoryProvider);
   return userRepository.fetchChat();
 });
+var first30 = true;
+var last30 = false;
+final first30StreamProvider =
+    StreamProvider<QuerySnapshot<Map<String, dynamic>>>((ref) {
+  return FirebaseFirestore.instance.collection('first-30').snapshots();
+});
+final last30StreamProvider =
+    StreamProvider<QuerySnapshot<Map<String, dynamic>>>((ref) {
+  return FirebaseFirestore.instance.collection('last-30').snapshots();
+});
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);

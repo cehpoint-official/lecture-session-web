@@ -1,15 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_web/chat/chat_box.dart';
+
+import 'package:flutter_web/main.dart';
 
 import 'package:video_player/video_player.dart';
 
 import '../model/default_users.dart';
-
-// final durationProvider=Provider((ref) => )
-final numberProvider = StreamProvider<QuerySnapshot<Map<String, dynamic>>>(
-    (ref) => FirebaseFirestore.instance.collection('user-data').snapshots());
 
 class VideoPlayerWidget extends ConsumerStatefulWidget {
   const VideoPlayerWidget({super.key});
@@ -62,10 +58,7 @@ class _VideoPlayerWidgetState extends ConsumerState<VideoPlayerWidget> {
           builder: (context, value, child) {
             var duration =
                 Duration(milliseconds: value.position.inMilliseconds.round());
-            // print(duration.inSeconds);
-            // if (duration == value.duration && duration > Duration.zero) {
-            //   last30=true;
-            // }
+
             if (duration > const Duration(seconds: 60)) {
               first30 = false;
             }
